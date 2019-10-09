@@ -17,6 +17,15 @@ $("#form-add-promo").submit(function(evt){
 		url : "/promocao/save",
 		data: promo,
 		beforeSend: function(){
+			//removendo as mensagens
+			$("span").closest('.error-span').remove();
+			//removendo as bordas vermelhas
+			$("#categoria").removeClass("is-invalid");
+			$("#preco").removeClass("is-invalid");
+			$("#linkPromocao").removeClass("is-invalid");
+			$("#titulo").removeClass("is-invalid");
+			
+			//habilita o load
 			$("#form-add-promo").hide();
 			$("#loader-form").addClass("loader").show();
 		},
@@ -26,10 +35,22 @@ $("#form-add-promo").submit(function(evt){
 			});
 			$("#linkImagem").attr("src", "/images/promo-dark.png");
 			$("#site").text("");
-			
+			$("#alert").removeClass("alert alert-danger");
 			$("#alert").addClass("alert alert-success").text("OK, promoção cadastrada com sucesso!");
 		},
-		
+		//adicionando status code 422 para tratar o bean validation
+		statusCode: {
+			422: function(xhr) {
+				console.log('status error:', xhr.status);
+				var errors = $.parseJSON(xhr.responseText);
+				$.each(errors, function(key, val){
+					$("#" + key).addClass("is-invalid");
+					$("#error-" + key)
+						.addClass("invalid-feedback")
+						.append("<span class='error-span'>" + val + "</span>")
+				});
+			}
+		},
 		error: function(xhr){
 			console.log("> Error >",xhr.responseText);
 			$("#alert").addClass("alert alert-danger").text("Não foi Possivel Salvar está Promoção!");
