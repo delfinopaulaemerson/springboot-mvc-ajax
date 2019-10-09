@@ -9,7 +9,6 @@ public class SpringbootMvcAjxApplication{
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootMvcAjxApplication.class, args);
 	}
-
 	
 
 }
